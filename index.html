@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Will You Be Mine?</title>
+    <!-- Import Montserrat font -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      /* Global Font */
+      body {
+        font-family: 'Montserrat', sans-serif;
+      }
+
+      /* Custom Heartbeat Animation */
+      @keyframes heartbeat {
+        0% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.15) rotate(-2deg);
+        }
+        100% {
+          transform: scale(1);
+        }
+      }
+      .animate-heartbeat {
+        animation: heartbeat 1.5s infinite;
+      }
+
+      /* Confetti Fall Animation */
+      @keyframes confetti-fall {
+        0% {
+          transform: translate3d(0, -100vh, 0) rotate(0deg);
+          opacity: 1;
+        }
+        100% {
+          transform: translate3d(var(--moveX, 0), 100vh, 0) rotate(720deg);
+          opacity: 0;
+        }
+      }
+      .confetti {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        position: fixed;
+        top: 0;
+        pointer-events: none;
+        z-index: 30;
+        animation: confetti-fall linear forwards;
+      }
+    </style>
+  </head>
+  <body
+    class="min-h-screen flex items-center justify-center overflow-x-hidden p-5 bg-gradient-to-br from-yellow-100 to-yellow-400 relative"
+  >
+    <!-- Main Card -->
+    <div
+      id="card"
+      class="bg-white/97 rounded-2xl shadow-lg w-full max-w-sm p-8 text-center relative z-10 transition duration-500 ease-in-out"
+    >
+      <h1 class="text-red-500 text-2xl font-semibold mb-2">Will You Be Mine?</h1>
+      <!-- The name in the question is set dynamically -->
+      <h2 id="question" class="text-slate-800 text-lg font-normal mb-5">
+        Emily, will you make my heart complete?
+      </h2>
+      <img
+        id="fgif"
+        class="w-30 mx-auto mb-5 animate-heartbeat"
+        src=""
+        alt="Heart"
+      />
+
+      <div class="flex justify-around gap-4 mt-5">
+        <button
+          id="yesBtn"
+          onclick="handleYes()"
+          class="bg-green-500 text-white px-4 py-3 rounded-md min-w-[120px] transition-transform duration-300 ease-in-out relative overflow-hidden hover:scale-110 hover:shadow-lg"
+        >
+          Yes, of course!
+        </button>
+        <button
+          id="noBtn"
+          onclick="handleNo()"
+          class="bg-red-800 text-white px-4 py-3 rounded-md min-w-[120px] transition-transform duration-300 ease-in-out"
+        >
+          No
+        </button>
+      </div>
+    </div>
+
+    <!-- Success Screen -->
+    <div
+      id="successPage"
+      class="bg-white/97 rounded-2xl shadow-lg w-full max-w-sm p-8 text-center absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 scale-90 opacity-0 transition-all duration-800 ease-in-out"
+    >
+      <h1 class="text-yellow-500 text-2xl font-semibold mb-4">
+        Yay! You Said Yes!
+      </h1>
+      <img
+        id="secgif"
+        class="w-30 mx-auto mb-5 animate-heartbeat"
+        src=""
+        alt="Celebration"
+      />
+      <p class="text-slate-800 text-lg">
+        Let's create the most beautiful love story together.
+      </p>
+    </div>
+
+    <script>
+      let noClickCount = 0;
+      const minScale = 0.1;
+      const shrinkFactor = 0.2;
+      const gifLinks = [
+        "https://i.pinimg.com/originals/e6/da/33/e6da337aeff7085ebc707f7a431be51c.gif",
+        "https://i.pinimg.com/originals/b7/5a/6e/b75a6e09f8e810a9a371d90b3c69bdf2.gif",
+        "https://i.pinimg.com/originals/4f/11/44/4f1144dd8fbb55e60cdd2f1e3c878c9a.gif",
+        "https://i.pinimg.com/originals/55/25/43/552543662971a35d0e76322945f81fb5.gif",
+      ];
+      const gifLinks2 = [
+        "https://i.pinimg.com/originals/3a/ff/b5/3affb505c4e27da318cd5a6bcfbb9d02.gif",
+        "https://i.pinimg.com/originals/77/bc/7f/77bc7fd8117fa88beb837f39ef4d6544.gif",
+        "https://i.pinimg.com/originals/cf/eb/48/cfeb482eb54bfc4c9c356e4a21dca2d4.gif",
+      ];
+
+      // Random GIF Selector
+      function chooseRandomGif(links) {
+        const randomIndex = Math.floor(Math.random() * links.length);
+        return links[randomIndex];
+      }
+
+      // Function to get URL parameter for name
+      function getNameFromURL() {
+        const params = new URLSearchParams(window.location.search);
+        return params.get("name") || "Emily";
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        // Set dynamic name in question
+        const name = getNameFromURL();
+        document.getElementById("question").textContent = `${name}, will you make my heart complete?`;
+
+        // Set random GIFs
+        document.getElementById("fgif").src = chooseRandomGif(gifLinks);
+        document.getElementById("secgif").src = chooseRandomGif(gifLinks2);
+
+        // Add hover event on the "No" button to make it move away.
+        document.getElementById("noBtn").addEventListener("mouseenter", moveNoButton);
+      });
+
+      // Move the "No" button to a random location within the viewport
+      function moveNoButton() {
+        const btn = document.getElementById("noBtn");
+        // Change position to fixed so that it moves relative to the viewport
+        btn.style.position = "fixed";
+        // Determine button size
+        const btnWidth = btn.offsetWidth;
+        const btnHeight = btn.offsetHeight;
+        // Determine viewport boundaries
+        const maxX = window.innerWidth - btnWidth;
+        const maxY = window.innerHeight - btnHeight;
+        // Generate random positions within the boundaries
+        const randomX = Math.floor(Math.random() * maxX);
+        const randomY = Math.floor(Math.random() * maxY);
+        btn.style.left = randomX + "px";
+        btn.style.top = randomY + "px";
+      }
+
+      // Fallback if the user somehow manages to click "No"
+      function handleNo() {
+        const noBtn = document.getElementById("noBtn");
+        const yesBtn = document.getElementById("yesBtn");
+        const card = document.getElementById("card");
+        
+        const questionText = document.getElementById('noBtn');
+        
+
+        noClickCount++;
+         const messages = [
+       "Are you sure? 😢",
+            "Really sure? 💔",
+            "Think again! 😭",
+            "Last chance! 🥺",
+            "Don't do this! 😱",
+            "My heart is breaking... 💔",
+            "Would it help if I got down on one knee?",
+            "I'm not giving up that easily!",
+            "I'll keep asking until the end of time!",
+        "Really? Are you sure?",
+        "Think again, please...",
+        "I promise I'm amazing!",
+        "You might regret this!"
+      ];
+      questionText.textContent = messages[Math.min(noClickCount - 1, messages.length - 1)];
+
+        // Shrink the "No" button (this will be barely seen if it jumps on hover)
+        let newScale = 1 - noClickCount * shrinkFactor;
+        if (newScale < minScale) {
+          newScale = minScale;
+        }
+        noBtn.style.transform = `scale(${newScale})`;
+
+        // Nudge the "Yes" button slightly to appear more inviting.
+        yesBtn.style.transform = `scale(${1 + noClickCount * 0.5}) translateY(${
+          -noClickCount * 2
+        }px)`;
+
+        // Optional: Create playful broken heart effects.
+        for (let i = 0; i < 30; i++) {
+          createBrokenHeart();
+        }
+      }
+
+      function handleYes() {
+        const card = document.getElementById("card");
+        const successPage = document.getElementById("successPage");
+
+        // Create a confetti burst.
+        for (let i = 0; i < 40; i++) {
+          createConfetti();
+        }
+
+        // Transition out the main card.
+        card.style.opacity = 0;
+        card.style.transform = "scale(0.8)";
+        setTimeout(() => {
+          card.style.display = "none";
+          // Reveal the success page.
+          successPage.classList.add("active");
+          successPage.style.opacity = 1;
+          successPage.style.transform = "translate(-50%, -50%) scale(1)";
+        }, 500);
+      }
+
+      function createBrokenHeart() {
+        const heart = document.createElement("div");
+        heart.style.position = "fixed";
+        heart.style.width = "20px";
+        heart.style.height = "20px";
+        heart.style.backgroundImage =
+          "url('data:image/svg+xml,%3Csvg viewBox=\"0 0 24 24\" fill=\"%23e74c3c\" xmlns=\"http://www.w3.org/2000/svg\"%3E%3Cpath d=\"M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z\"/%3E%3C/svg%3E')";
+        heart.style.backgroundSize = "contain";
+        heart.style.backgroundRepeat = "no-repeat";
+        heart.style.left = Math.random() * 100 + "vw";
+        heart.style.top = Math.random() * 100 + "vh";
+        heart.style.opacity = 0.9;
+        heart.style.transition = "opacity 1s ease-out, transform 1s ease-out";
+        document.body.appendChild(heart);
+        setTimeout(() => {
+          heart.style.opacity = 0;
+          heart.style.transform = "translateY(30px) scale(0.5)";
+        }, 50);
+        setTimeout(() => heart.remove(), 1000);
+      }
+
+      function createConfetti() {
+        const confetti = document.createElement("div");
+        confetti.className = "confetti";
+        confetti.style.left = Math.random() * 100 + "vw";
+        confetti.style.setProperty("--moveX", (Math.random() * 100 - 50) + "vw");
+        confetti.style.backgroundColor = `hsl(${Math.random() * 360}, 70%, 60%)`;
+        confetti.style.animationDuration = (Math.random() * 1 + 1) + "s";
+        confetti.style.top = "0";
+        document.body.appendChild(confetti);
+        setTimeout(() => confetti.remove(), 1500);
+      }
+    </script>
+  </body>
+</html>
