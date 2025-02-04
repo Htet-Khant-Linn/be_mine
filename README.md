@@ -23,7 +23,7 @@ A playful, personalized web page that asks, "Will You Be Mine?" featuring intera
 
 
 
-> *Screenshot of the "Will You Be Mine?" page (replace with your own screenshot).*
+> *screenshot.png*
 
 ## How to Run
 
@@ -90,4 +90,3 @@ This project is licensed under the [MIT License](LICENSE).
 - Thanks to the creators of the GIFs and animations used in this project.
 
 Made with ❤️ by Toewaioo
-PHP File Manager
