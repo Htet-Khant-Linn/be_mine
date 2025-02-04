@@ -30,8 +30,8 @@ A playful, personalized web page that asks, "Will You Be Mine?" featuring intera
 1. **Clone or Download the Repository:**
 
    ```bash
-   git clone https://github.com/your-username/will-you-be-mine.git
-   cd will-you-be-mine
+   git clone https://github.com/toewaioo/be_mine.git
+   cd be_mine
    ```
 
 2. **Open the HTML File:**\
@@ -52,10 +52,10 @@ A playful, personalized web page that asks, "Will You Be Mine?" featuring intera
 ## Project Structure
 
 ```
-will-you-be-mine/
-├── index.html       # Main HTML file with inline CSS and JavaScript
-├── README.md        # This file
-└── screenshot.png   # (Optional) Screenshot of the project
+be_mine/
+├── index.html
+├── README.md
+└── Screenshot_2025-02-03-21-44-15-336_org.telegram.messenger.jpg
 ```
 
 ## Technologies Used
