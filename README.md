@@ -23,7 +23,7 @@ A playful, personalized web page that asks, "Will You Be Mine?" featuring intera
 
 
 
-> Screenshot_2025-02-03-21-44-15-336_org.telegram.messenger.jpg
+>![Alt text](Screenshot_2025-02-03-21-44-15-336_org.telegram.messenger.jpg) 
 
 ## How to Run
 
